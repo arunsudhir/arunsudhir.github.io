@@ -102,7 +102,54 @@ const CodePractice = () => {
         '4': 'Add the new neighbor to our queue of nodes to visit',
         '5': 'The graph is connected if we\'ve seen all nodes'
       }
-    }
+    },
+    {
+      id: 'sliding-window-min-sum',
+      title: 'Smallest array for a given sum ',
+      description: 'Given an array of positive integers and a number S, find the length of the smallest contiguous subarray whose sum is greater than or equal to S. Return 0 if no such subarray exists.',
+      codeLines: [
+        'def findMinSubArray(self, s, arr):',
+        ' window_sum = 0      # Initialize the sum of the current window',
+        ' min_length = math.inf  # Initialize the minimum length to positive infinity',
+        ' window_start = 0    # Initialize the start of the current window',
+        '',
+        'for window_end in range(0, len(arr)):',
+        '    window_sum += _____1_____  # Add the next element to the window sum',
+        '    # Shrink the window as small as possible until window_sum is smaller than s',
+        '    while _____2_____:',
+        '        min_length = min(min_length, _____3_____)  # Update the minimum length',
+        '        window_sum -= _____4_____  # Remove the element going out of the window',
+        '        _____5_____  # Slide the window ahead',
+        '',
+        'if min_length == math.inf:',
+        '    return 0',
+        'return min_length'
+      ],
+      tokens: [
+        'window_sum >= s',
+        'arr[window_end]',
+        'window_sum <= s',
+        'window_end - window_start + 1',
+        'window_end - window_start',
+        'arr[window_start]',
+        'window_start += 1',
+        'window_end -= 1'
+      ],
+      solutions: {
+        '1': 'arr[window_end]',
+        '2': 'window_sum >= s',
+        '3': 'window_end - window_start + 1',
+        '4': 'arr[window_start]',
+        '5': 'window_start += 1'
+      },
+      hints: {
+        '1': 'We need to continue while there are nodes to visit',
+        '2': 'We should remove and return the next node to process',
+        '3': 'We only want to process nodes we haven\'t seen before',
+        '4': 'Add the new neighbor to our queue of nodes to visit',
+        '5': 'The graph is connected if we\'ve seen all nodes'
+      }
+    },
   ];
 
   const currentProblem = PROBLEMS[currentProblemIndex];
