@@ -248,7 +248,7 @@ const CodePractice = () => {
 
       <div className="flex gap-8">
         <div className="w-3/4">
-        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono">
+        <pre className="bg-gray-100 p-4 rounded-md text-sm font-mono text-left">
             {currentProblem.codeLines.map((line, index) => {
               const matches = line.match(/_____\d+_____/g);
               if (!matches) return <div key={index}>{line}</div>;
