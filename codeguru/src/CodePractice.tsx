@@ -56,6 +56,52 @@ const CodePractice = () => {
         '4': 'Add the new neighbor to our queue of nodes to visit',
         '5': 'The graph is connected if we\'ve seen all nodes'
       }
+    },
+    {
+      id: 'binary-search',
+      title: 'Binary Search Implementation',
+      description: 'Complete the code for a binary search algorithm.',
+      codeLines: [
+        'function binarySearch(arr, target) {',
+        '  let left = 0;',
+        '  let right = _____1_____;',
+        '',
+        '  while (_____2_____) {',
+        '    const mid = _____3_____;',
+        '    if (arr[mid] === target) {',
+        '      return mid;',
+        '    } else if (_____4_____) {',
+        '      left = mid + 1;',
+        '    } else {',
+        '      right = _____5_____;',
+        '    }',
+        '  }',
+        '  return -1;',
+        '}'
+      ],
+      tokens: [
+        'arr.length - 1',
+        'left <= right',
+        'Math.floor((left + right) / 2)',
+        'arr[mid] < target',
+        'mid - 1',
+        'left >= right',
+        'Math.ceil((left + right) / 2)'
+      ],
+      solutions: {
+        '1': 'arr.length - 1',
+        '2': 'left <= right',
+        '3': 'Math.floor((left + right) / 2)',
+        '4': 'arr[mid] < target',
+        '5': 'mid - 1'
+      },
+      hints: {
+        '1': 'We need to continue while there are nodes to visit',
+        '2': 'We should remove and return the next node to process',
+        '3': 'We only want to process nodes we haven\'t seen before',
+        '4': 'Add the new neighbor to our queue of nodes to visit',
+        '5': 'The graph is connected if we\'ve seen all nodes'
+      }
     }
   ];
 
@@ -83,6 +129,15 @@ const CodePractice = () => {
     setShowResults(false);
     setShowHint(null);
     setShowSuccessAnimation(false);
+  };
+
+  const navigateProblem = (direction : number) => {
+    const newIndex = currentProblemIndex + direction;
+    if (newIndex >= 0 && newIndex < PROBLEMS.length) {
+      setCurrentProblemIndex(newIndex);
+      setFilledAnswers({});
+      setShowResults(false);
+    }
   };
 
   const checkAnswers = () => {
@@ -125,6 +180,25 @@ const CodePractice = () => {
         <h2 className="text-2xl font-bold mb-2">{currentProblem.title}</h2>
         <p className="text-sm text-gray-800 font-sans">{currentProblem.description}</p>
       </div>
+      <div className="flex items-center gap-4">
+          <button 
+            onClick={() => navigateProblem(-1)}
+            disabled={currentProblemIndex === 0}
+            className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
+          >
+            <p className="text-sm">&lt;</p>
+          </button>
+          <span className="text-sm">
+            Problem {currentProblemIndex + 1} of {PROBLEMS.length}
+          </span>
+          <button 
+            onClick={() => navigateProblem(1)}
+            disabled={currentProblemIndex === PROBLEMS.length - 1}
+            className="p-2 rounded hover:bg-gray-100 disabled:opacity-50"
+          >
+            <p className="text-sm">&gt;</p>
+          </button>
+        </div>
 
       <div className="flex gap-8">
         <div className="w-3/4">
