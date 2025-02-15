@@ -43,5 +43,8 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://arunsudhir.github.io/"
+  "homepage": "https://arunsudhir.github.io/",
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
 }
