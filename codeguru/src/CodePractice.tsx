@@ -109,17 +109,16 @@ const CodePractice = () => {
       description: 'Given an array of positive integers and a number S, find the length of the smallest contiguous subarray whose sum is greater than or equal to S. Return 0 if no such subarray exists.',
       codeLines: [
         'def findMinSubArray(self, s, arr):',
-        ' window_sum = 0      # Initialize the sum of the current window',
-        ' min_length = math.inf  # Initialize the minimum length to positive infinity',
-        ' window_start = 0    # Initialize the start of the current window',
+        ' window_sum = 0',
+        ' min_length = math.inf',
+        ' window_start = 0',
         '',
         'for window_end in range(0, len(arr)):',
-        '    window_sum += _____1_____  # Add the next element to the window sum',
-        '    # Shrink the window as small as possible until window_sum is smaller than s',
+        '    window_sum += _____1_____',
         '    while _____2_____:',
-        '        min_length = min(min_length, _____3_____)  # Update the minimum length',
-        '        window_sum -= _____4_____  # Remove the element going out of the window',
-        '        _____5_____  # Slide the window ahead',
+        '        min_length = min(min_length, _____3_____)',
+        '        window_sum -= _____4_____',
+        '        _____5_____',
         '',
         'if min_length == math.inf:',
         '    return 0',
@@ -149,7 +148,7 @@ const CodePractice = () => {
         '4': 'Add the new neighbor to our queue of nodes to visit',
         '5': 'The graph is connected if we\'ve seen all nodes'
       }
-    },
+    }
   ];
 
   const currentProblem = PROBLEMS[currentProblemIndex];
