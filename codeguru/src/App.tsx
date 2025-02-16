@@ -1,5 +1,5 @@
 import React from "react";
-import CodePractice from "./CodePractice"; // Import the component
+import CodePractice from "./components/CodePractice"; // Import the component
 import "./App.css"; // Optional: Keep styles if needed
 
 function App() {
