@@ -88,12 +88,12 @@ const PROBLEMS = [
       '5': 'mid - 1'
     },
     hints: {
-      '1': 'We need to continue while there are nodes to visit',
-      '2': 'We should remove and return the next node to process',
-      '3': 'We only want to process nodes we haven\'t seen before',
-      '4': 'Add the new neighbor to our queue of nodes to visit',
-      '5': 'The graph is connected if we\'ve seen all nodes'
-    }
+      "1": "Initialize the right boundary of the search to the last index of the array.",
+      "2": "Continue searching while the left index does not surpass the right index.",
+      "3": "Find the middle index of the current search range.",
+      "4": "If the middle element is smaller than the target, narrow the search to the right half.",
+      "5": "If the middle element is greater than the target, narrow the search to the left half."
+}
   },
   {
     id: 'sliding-window-min-sum',
@@ -134,12 +134,12 @@ const PROBLEMS = [
       '5': 'window_start += 1'
     },
     hints: {
-      '1': 'We need to continue while there are nodes to visit',
-      '2': 'We should remove and return the next node to process',
-      '3': 'We only want to process nodes we haven\'t seen before',
-      '4': 'Add the new neighbor to our queue of nodes to visit',
-      '5': 'The graph is connected if we\'ve seen all nodes'
-    }
+      "1": "Expand the window by adding the current element to the running sum.",
+      "2": "Shrink the window when the sum meets or exceeds the target value.",
+      "3": "Update the minimum length by considering the current window size.",
+      "4": "Since we're shrinking the window, subtract the element at the start of the window.",
+      "5": "Move the window forward by incrementing the start index."
+}
   }
 ];
 
