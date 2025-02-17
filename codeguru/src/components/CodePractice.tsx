@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { CODING_PROBLEMS } from '../data/problems';
-import type { CodingProblem } from '../data/types';
+import {TAG_METADATA} from '../data/types'
+import type { CodingProblem, ProblemTag } from '../data/types';
 
 
 const CodePractice = () => {
@@ -13,10 +14,42 @@ const CodePractice = () => {
   const [showHint, setShowHint] = useState<string | null>(null);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<Set<ProblemTag>>(new Set());
 
 
+  // Filter problems based on selected tags
+  const filteredProblems = useMemo(() => {
+    if (selectedTags.size === 0) return CODING_PROBLEMS;
+    return CODING_PROBLEMS.filter(problem =>
+      problem.tags.some(tag => selectedTags.has(tag))
+    );
+  }, [selectedTags]);
 
-  const currentProblem: CodingProblem = CODING_PROBLEMS[currentProblemIndex];
+  const currentProblem = filteredProblems[currentProblemIndex];
+
+  // Handle tag selection/deselection
+  const toggleTag = (tag: ProblemTag) => {
+    setSelectedTags(prev => {
+      const newTags = new Set(prev);
+      if (newTags.has(tag)) {
+        newTags.delete(tag);
+      } else {
+        newTags.add(tag);
+      }
+      return newTags;
+    });
+
+    // Reset to first problem when changing filters
+    setCurrentProblemIndex(0);
+    clearAnswers();
+  };
+
+  // Clear all selected tags
+  const clearTags = () => {
+    setSelectedTags(new Set());
+    setCurrentProblemIndex(0);
+    clearAnswers();
+  };
 
   const handleDragStart = (token: string) => {
     setDraggedToken(token);
@@ -126,6 +159,56 @@ const CodePractice = () => {
 
   return (
     <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg text-gray-900">
+      {/* Tag Filter Section */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-2">Filter by Topic:</h3>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {Object.entries(TAG_METADATA).map(([tag, metadata]) => (
+            <button
+              key={tag}
+              onClick={() => toggleTag(tag as ProblemTag)}
+              className={`px-3 py-1 rounded-full text-sm font-medium transition-all
+                ${selectedTags.has(tag as ProblemTag) 
+                  ? metadata.color
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+            >
+              {metadata.label}
+            </button>
+          ))}
+          {selectedTags.size > 0 && (
+            <button
+              onClick={clearTags}
+              className="px-3 py-1 rounded-full text-sm font-medium bg-gray-200 
+                text-gray-700 hover:bg-gray-300 transition-all"
+            >
+              Clear All
+            </button>
+          )}
+        </div>
+        
+        {/* Active filters display */}
+        {selectedTags.size > 0 && (
+          <div className="text-sm text-gray-600">
+            Showing {filteredProblems.length} problem(s) with selected topics
+          </div>
+        )}
+      </div>
+      
+      {/* Current problem tags display */}
+      {currentProblem && (
+        <div className="flex gap-2 mb-4">
+          {currentProblem.tags.map(tag => (
+            <span
+              key={tag}
+              className={`px-2 py-1 rounded-full text-xs font-medium ${TAG_METADATA[tag].color}`}
+            >
+              {TAG_METADATA[tag].label}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="mb-8 space-y-4">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           {currentProblem.title}

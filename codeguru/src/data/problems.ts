@@ -46,7 +46,8 @@ export const CODING_PROBLEMS: CodingProblem[] = [
         '3': 'We only want to process nodes we haven\'t seen before',
         '4': 'Add the new neighbor to our queue of nodes to visit',
         '5': 'The graph is connected if we\'ve seen all nodes'
-      }
+      },
+      tags: ['graph', 'bfs']
     },
     {
       id: 'binary-search',
@@ -92,7 +93,8 @@ export const CODING_PROBLEMS: CodingProblem[] = [
         "3": "Find the middle index of the current search range.",
         "4": "If the middle element is smaller than the target, narrow the search to the right half.",
         "5": "If the middle element is greater than the target, narrow the search to the left half."
-  }
+  },
+  tags: ['binary-search']
     },
     {
       id: 'sliding-window-min-sum',
@@ -138,7 +140,9 @@ export const CODING_PROBLEMS: CodingProblem[] = [
         "3": "Update the minimum length by considering the current window size.",
         "4": "Since we're shrinking the window, subtract the element at the start of the window.",
         "5": "Move the window forward by incrementing the start index."
-      }
+      },
+  tags: ['sliding-window', 'array']
+
     },
     {
       "id": "longest-substring-k-distinct",
@@ -189,7 +193,9 @@ export const CODING_PROBLEMS: CodingProblem[] = [
           "3": "Decrease the frequency count when shrinking the window.",
           "4": "Remove a character from the frequency dictionary when its count reaches zero.",
           "5": "Track the longest valid substring length."
-      }
+      },
+  tags: ['sliding-window', 'string']
+      
     },
     {
       "id": "longest-substring-same-letters-replacement",
@@ -239,7 +245,9 @@ export const CODING_PROBLEMS: CodingProblem[] = [
           "3": "Track the most frequent letter count in the window.",
           "4": "Decrease the frequency count when shrinking the window.",
           "5": "Track the longest valid substring length."
-      }
+      },
+  tags: ['sliding-window', 'string']
+
     },
     {
       "id": "merge-intervals",
@@ -297,7 +305,9 @@ export const CODING_PROBLEMS: CodingProblem[] = [
           "3": "If overlapping, update the end time to the maximum end time.",
           "4": "Add the merged interval to the result list when a non-overlapping interval is found.",
           "5": "Ensure the last interval is also added to the result."
-      }
+      },
+    tags: ['merge-intervals']
+
     },
     {
       "id": "insert-interval",
@@ -349,6 +359,8 @@ export const CODING_PROBLEMS: CodingProblem[] = [
           "3": "Adjust the start of the new interval to merge overlaps.",
           "4": "Adjust the end of the new interval to merge overlaps.",
           "5": "After merging, insert the new interval before adding remaining intervals."
-      }
+      },
+    tags: ['merge-intervals']
+
     }
   ];

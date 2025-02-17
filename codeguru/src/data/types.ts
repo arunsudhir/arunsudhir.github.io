@@ -1,6 +1,46 @@
 // types.ts
 
 /**
+ * Represents different categories of coding problems
+ * This can be expanded as new categories are added
+ */
+export type ProblemTag = 
+  | 'sliding-window' 
+  | 'graph' 
+  | 'dynamic-programming'
+  | 'binary-search'
+  | 'two-pointers'
+  | 'bfs'
+  | 'dfs'
+  | 'tree'
+  | 'array'
+  | 'string'
+  | 'merge-intervals';
+
+// Interface for tag metadata
+export interface TagMetadata {
+    label: string;
+    color: string;
+  }
+/**
+ * Metadata for displaying tags, including user-friendly names and colors
+ */
+export const TAG_METADATA: Record<ProblemTag, TagMetadata>  = {
+  'sliding-window': { label: 'Sliding Window', color: 'bg-blue-100 text-blue-800' },
+  'graph': { label: 'Graph', color: 'bg-purple-100 text-purple-800' },
+  'dynamic-programming': { label: 'Dynamic Programming', color: 'bg-green-100 text-green-800' },
+  'binary-search': { label: 'Binary Search', color: 'bg-yellow-100 text-yellow-800' },
+  'two-pointers': { label: 'Two Pointers', color: 'bg-pink-100 text-pink-800' },
+  'bfs': { label: 'BFS', color: 'bg-indigo-100 text-indigo-800' },
+  'dfs': { label: 'DFS', color: 'bg-red-100 text-red-800' },
+  'tree': { label: 'Tree', color: 'bg-emerald-100 text-emerald-800' },
+  'array': { label: 'Array', color: 'bg-orange-100 text-orange-800' },
+  'string': { label: 'String', color: 'bg-cyan-100 text-cyan-800' },
+  'merge-intervals': { label: 'Merge Intervals', color: 'bg-teal-100 text-teal-800' }
+
+};
+
+/**
  * Represents a coding problem that students can solve by filling in blanks
  * with provided code tokens. Each problem includes a title, description,
  * code template with blanks, and the correct solutions.
@@ -43,6 +83,8 @@ export interface CodingProblem {
     hints: {
       [key: string]: string;
     };
+
+    tags: ProblemTag[]; // New field for problem categorization
   }
   
   /**
