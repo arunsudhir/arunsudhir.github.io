@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { CODING_PROBLEMS } from '../data/problems';
 import {TAG_METADATA} from '../data/types'
 import type { CodingProblem, ProblemTag } from '../data/types';
+import CollapsibleTags from './CollapsibleTags';
 
 
 const CodePractice = () => {
@@ -14,19 +15,21 @@ const CodePractice = () => {
   const [showHint, setShowHint] = useState<string | null>(null);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<Set<ProblemTag>>(new Set());
+  //const [selectedTags, setSelectedTags] = useState<Set<ProblemTag>>(new Set());
+  // Add state for selected tags
+  const [selectedTags, setSelectedTags] = useState<ProblemTag[]>([]);
 
 
   // Filter problems based on selected tags
-  const filteredProblems = useMemo(() => {
-    if (selectedTags.size === 0) return CODING_PROBLEMS;
-    return CODING_PROBLEMS.filter(problem =>
-      problem.tags.some(tag => selectedTags.has(tag))
-    );
-  }, [selectedTags]);
+  const filteredProblems = CODING_PROBLEMS.filter(problem => {
+    // If no tags are selected, show all problems
+    if (selectedTags.length === 0) return true;
+    // Show problems that have at least one of the selected tags
+    return selectedTags.some(tag => problem.tags.includes(tag));
+  });
 
   const currentProblem = filteredProblems[currentProblemIndex];
-
+   /*
   // Handle tag selection/deselection
   const toggleTag = (tag: ProblemTag) => {
     setSelectedTags(prev => {
@@ -50,7 +53,7 @@ const CodePractice = () => {
     setCurrentProblemIndex(0);
     clearAnswers();
   };
-
+  */
   const handleDragStart = (token: string) => {
     setDraggedToken(token);
     if (showResults) {
@@ -124,6 +127,16 @@ const CodePractice = () => {
     return Object.keys(currentProblem.solutions).every(index => filledAnswers[index]);
   };
 
+  // Handle tag selection
+  const handleTagSelect = (tag: ProblemTag) => {
+    setSelectedTags([...selectedTags, tag]);
+  };
+
+  // Handle tag deselection
+  const handleTagDeselect = (tag: ProblemTag) => {
+    setSelectedTags(selectedTags.filter(t => t !== tag));
+  };
+  
   const getSlotClassName = (index : string) => {
     const baseClass = "mx-1 px-2 py-1 rounded cursor-pointer transition-all duration-300";
     if (showSuccessAnimation && isAnswerCorrect(index)) {
@@ -162,53 +175,13 @@ const CodePractice = () => {
       {/* Tag Filter Section */}
       <div className="mb-6">
         <h3 className="text-lg font-semibold mb-2">Filter by Topic:</h3>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {Object.entries(TAG_METADATA).map(([tag, metadata]) => (
-            <button
-              key={tag}
-              onClick={() => toggleTag(tag as ProblemTag)}
-              className={`px-3 py-1 rounded-full text-sm font-medium transition-all
-                ${selectedTags.has(tag as ProblemTag) 
-                  ? metadata.color
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-            >
-              {metadata.label}
-            </button>
-          ))}
-          {selectedTags.size > 0 && (
-            <button
-              onClick={clearTags}
-              className="px-3 py-1 rounded-full text-sm font-medium bg-gray-200 
-                text-gray-700 hover:bg-gray-300 transition-all"
-            >
-              Clear All
-            </button>
-          )}
-        </div>
-        
-        {/* Active filters display */}
-        {selectedTags.size > 0 && (
-          <div className="text-sm text-gray-600">
-            Showing {filteredProblems.length} problem(s) with selected topics
-          </div>
-        )}
+        <CollapsibleTags
+        currentTags={currentProblem.tags}
+        selectedTags={selectedTags}
+        onTagSelect={handleTagSelect}
+        onTagDeselect={handleTagDeselect}
+      />
       </div>
-      
-      {/* Current problem tags display */}
-      {currentProblem && (
-        <div className="flex gap-2 mb-4">
-          {currentProblem.tags.map(tag => (
-            <span
-              key={tag}
-              className={`px-2 py-1 rounded-full text-xs font-medium ${TAG_METADATA[tag].color}`}
-            >
-              {TAG_METADATA[tag].label}
-            </span>
-          ))}
-        </div>
-      )}
-
       <div className="mb-8 space-y-4">
         <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           {currentProblem.title}
