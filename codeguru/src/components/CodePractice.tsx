@@ -4,6 +4,11 @@ import { CODING_PROBLEMS } from '../data/problems';
 import {TAG_METADATA} from '../data/types'
 import type { CodingProblem, ProblemTag } from '../data/types';
 import CollapsibleTags from './CollapsibleTags';
+import * as Diff from 'diff';
+
+
+
+
 
 
 const CodePractice = () => {
@@ -18,6 +23,12 @@ const CodePractice = () => {
   //const [selectedTags, setSelectedTags] = useState<Set<ProblemTag>>(new Set());
   // Add state for selected tags
   const [selectedTags, setSelectedTags] = useState<ProblemTag[]>([]);
+  // fill editor related commands
+  const [showFullEditor, setShowFullEditor] = useState(false);
+  const [userCode, setUserCode] = useState('');
+  const [feedback, setFeedback] = useState<React.ReactNode | null>(null);
+
+
 
 
   // Filter problems based on selected tags
@@ -29,31 +40,7 @@ const CodePractice = () => {
   });
 
   const currentProblem = filteredProblems[currentProblemIndex];
-   /*
-  // Handle tag selection/deselection
-  const toggleTag = (tag: ProblemTag) => {
-    setSelectedTags(prev => {
-      const newTags = new Set(prev);
-      if (newTags.has(tag)) {
-        newTags.delete(tag);
-      } else {
-        newTags.add(tag);
-      }
-      return newTags;
-    });
 
-    // Reset to first problem when changing filters
-    setCurrentProblemIndex(0);
-    clearAnswers();
-  };
-
-  // Clear all selected tags
-  const clearTags = () => {
-    setSelectedTags(new Set());
-    setCurrentProblemIndex(0);
-    clearAnswers();
-  };
-  */
   const handleDragStart = (token: string) => {
     setDraggedToken(token);
     if (showResults) {
@@ -92,6 +79,7 @@ const CodePractice = () => {
     }
   };
 
+  // not used cuurently
   const navigateProblem = (direction : number) => {
     const newIndex = currentProblemIndex + direction;
     if (newIndex >= 0 && newIndex < CODING_PROBLEMS.length) {
@@ -170,34 +158,99 @@ const CodePractice = () => {
     return <div>Loading...</div>;
   }
 
+  // full editor realted stuff
+  const handleAttemptFullCode = () => {
+    setShowFullEditor(true);
+  };
+  const handleNextQuestion = () => {
+    setCurrentProblemIndex((prevIndex) => (prevIndex + 1) % CODING_PROBLEMS.length);
+    setShowFullEditor(false);
+    setUserCode('');
+    setFeedback(null);
+  };
+
+  const handleCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setUserCode(event.target.value);
+  };
+
+  const normalizeCode = (code: string) => {
+    return code
+      .split("\n")
+      .map(line => line.trim())  // Remove leading/trailing spaces
+      .filter(line => line !== "")  // Remove empty lines
+      .join("\n");
+  };
+  
+  const handleSubmit = () => {
+    // Construct expected solution
+    const expectedSolution = normalizeCode(
+      currentProblem.codeLines.map(line =>
+        line.replace(/_____(\d+)_____/g, (_, match) => currentProblem.solutions[match] || '_____')
+      ).join("\n")
+    );
+  
+    // Normalize user's code
+    const cleanedUserCode = normalizeCode(userCode);
+  
+    console.log("Expected Solution:\n", expectedSolution);
+    console.log("User's Code:\n", cleanedUserCode);
+  
+    if (cleanedUserCode === expectedSolution) {
+      setFeedback("✅ Correct solution! Well done.");
+    } else {
+      // Generate diff
+      const diffResult = Diff.diffLines(expectedSolution, cleanedUserCode);
+      setFeedback(
+        <div className="mt-4 p-4 bg-red-100 text-red-800 rounded-md">
+          <p className="font-bold">❌ Incorrect. Try again.</p>
+          <pre className="whitespace-pre-wrap text-sm bg-gray-100 p-2 rounded-md">
+            {diffResult.map((part, index) => (
+              <span
+                key={index}
+                className={part.added ? "bg-green-300" : part.removed ? "bg-red-300" : ""}
+              >
+                {part.value}
+              </span>
+            ))}
+          </pre>
+        </div>
+      );
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg text-gray-900">
-      {/* Tag Filter Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Filter by Topic:</h3>
-        <CollapsibleTags
+  <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg text-gray-900">
+    {/* Tag Filter Section */}
+    <div className="mb-6">
+      <h3 className="text-lg font-semibold mb-2">Filter by Topic:</h3>
+      <CollapsibleTags
         currentTags={currentProblem.tags}
         selectedTags={selectedTags}
         onTagSelect={handleTagSelect}
         onTagDeselect={handleTagDeselect}
       />
-      </div>
-      <div className="mb-8 space-y-4">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          {currentProblem.title}
-        </h2>
-        <p className="text-lg text-gray-700 font-sans leading-relaxed">
-          {currentProblem.description}
-        </p>
-      </div>
+    </div>
 
+    {/* Problem Title & Description */}
+    <div className="mb-8 space-y-4">
+      <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        {currentProblem.title}
+      </h2>
+      <p className="text-lg text-gray-700 font-sans leading-relaxed">
+        {currentProblem.description}
+      </p>
+    </div>
+
+    {/* Toggle Between Partial Code & Full Code Editor */}
+    {!showFullEditor ? (
       <div className="flex gap-8">
+        {/* Partial Code View */}
         <div className="w-3/4 relative">
-        <pre className="bg-gray-100 p-6 rounded-lg text-sm font-mono text-left overflow-x-auto shadow-inner">
+          <pre className="bg-gray-100 p-6 rounded-lg text-sm font-mono text-left overflow-x-auto shadow-inner">
             {currentProblem.codeLines.map((line, index) => {
               const matches = line.match(/_____\d+_____/g);
               if (!matches) return <div key={index} className="leading-relaxed">{line}</div>;
-              
+
               let parts = line.split(/_____\d+_____/);
               return (
                 <div key={index} className="relative group leading-relaxed">
@@ -232,18 +285,32 @@ const CodePractice = () => {
               );
             })}
           </pre>
-          {currentProblemIndex < CODING_PROBLEMS.length - 1 && (
+
+          {/* Navigation & Full Code Attempt Button */}
+          <div className="mt-4 flex flex-col gap-4">
             <button
-              onClick={navigateNext}
-              className="mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg 
-                text-sm font-medium flex items-center justify-center gap-2 hover:from-blue-700 hover:to-purple-700 
-                transform transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              onClick={checkAnswers}
+              disabled={!allAnswersFilled()}
+              className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Next Question <ArrowRight className="w-4 h-4" />
+              Check Answers
             </button>
-          )}
+            <button
+              onClick={clearAnswers}
+              className="w-full bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
+            >
+              Clear Answers
+            </button>
+            <button
+              onClick={() => setShowFullEditor(true)}
+              className="w-full bg-blue-500 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
+            >
+              Attempt Full Code
+            </button>
+          </div>
         </div>
-        
+
+        {/* Draggable Tokens for Partial Code */}
         <div className="w-1/4 space-y-6">
           <div className="space-y-2">
             {currentProblem.tokens.map((token, index) => (
@@ -258,30 +325,53 @@ const CodePractice = () => {
               </div>
             ))}
           </div>
-          <div className="space-y-3">
-            <button
-              onClick={checkAnswers}
-              disabled={!allAnswersFilled()}
-              className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 
-                text-white px-6 py-3 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed
-                transform transition-all hover:scale-105 disabled:hover:scale-100 focus:outline-none focus:ring-2 
-                focus:ring-green-500 focus:ring-offset-2"
-            >
-              Check Answers
-            </button>
-            <button
-              onClick={clearAnswers}
-              className="w-full bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-sm font-medium
-                transform transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 
-                focus:ring-offset-2"
-            >
-              Clear Answers
-            </button>
-          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    ) : (
+      // Full Code Editor Section
+      <div className="flex flex-col gap-6">
+        <h2 className="text-xl font-bold">{currentProblem.title}</h2>
+        <p className="text-lg text-gray-700">{currentProblem.description}</p>
 
+        {/* Full Code Input */}
+        <textarea
+          value={userCode}
+          onChange={(e) => setUserCode(e.target.value)}
+          className="w-full h-64 p-4 border rounded-lg font-mono"
+          placeholder="Write your code here..."
+        />
+
+        {/* Full Code Submission & Navigation */}
+        <div className="flex gap-4">
+          <button
+            onClick={handleSubmit}
+            className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
+          >
+            Submit Code
+          </button>
+          <button
+            onClick={() => setShowFullEditor(false)}
+            className="w-full bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
+          >
+            Back to Partial Code
+          </button>
+        </div>
+
+        {/* Feedback Message */}
+        {feedback && <p className="mt-4 text-lg">{feedback}</p>}
+      </div>
+    )}
+
+    {/* Next Question Button */}
+    {currentProblemIndex < CODING_PROBLEMS.length - 1 && (
+      <button
+        onClick={navigateNext}
+        className="mt-6 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:from-blue-700 hover:to-purple-700 transform transition-all hover:scale-105"
+      >
+        Next Question <ArrowRight className="w-4 h-4" />
+      </button>
+    )}
+  </div>
+);
+};
 export default CodePractice;
