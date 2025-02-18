@@ -15,7 +15,15 @@ export type ProblemTag =
   | 'tree'
   | 'array'
   | 'string'
-  | 'merge-intervals';
+  | 'merge-intervals'
+  | 'lc-hard'
+  | 'lc-medium'
+  | 'meta'
+  | 'recursion'
+  | 'linkedlist'
+  | 'fundamentals' // New tag for fundamental concepts
+  | 'stack'
+  | 'lc-easy'; // New tag for LeetCode easy problems
 
 // Interface for tag metadata
 export interface TagMetadata {
@@ -25,20 +33,29 @@ export interface TagMetadata {
 /**
  * Metadata for displaying tags, including user-friendly names and colors
  */
-export const TAG_METADATA: Record<ProblemTag, TagMetadata>  = {
-  'sliding-window': { label: 'Sliding Window', color: 'bg-blue-100 text-blue-800' },
-  'graph': { label: 'Graph', color: 'bg-purple-100 text-purple-800' },
-  'dynamic-programming': { label: 'Dynamic Programming', color: 'bg-green-100 text-green-800' },
-  'binary-search': { label: 'Binary Search', color: 'bg-yellow-100 text-yellow-800' },
-  'two-pointers': { label: 'Two Pointers', color: 'bg-pink-100 text-pink-800' },
-  'bfs': { label: 'BFS', color: 'bg-indigo-100 text-indigo-800' },
-  'dfs': { label: 'DFS', color: 'bg-red-100 text-red-800' },
-  'tree': { label: 'Tree', color: 'bg-emerald-100 text-emerald-800' },
-  'array': { label: 'Array', color: 'bg-orange-100 text-orange-800' },
-  'string': { label: 'String', color: 'bg-cyan-100 text-cyan-800' },
-  'merge-intervals': { label: 'Merge Intervals', color: 'bg-teal-100 text-teal-800' }
+export const TAG_METADATA: Record<ProblemTag, TagMetadata> = {
+    'sliding-window': { label: 'Sliding Window', color: 'bg-blue-100 text-blue-800' },
+    'graph': { label: 'Graph', color: 'bg-purple-100 text-purple-800' },
+    'dynamic-programming': { label: 'Dynamic Programming', color: 'bg-green-100 text-green-800' },
+    'binary-search': { label: 'Binary Search', color: 'bg-yellow-100 text-yellow-800' },
+    'two-pointers': { label: 'Two Pointers', color: 'bg-pink-100 text-pink-800' },
+    'bfs': { label: 'BFS', color: 'bg-indigo-100 text-indigo-800' },
+    'dfs': { label: 'DFS', color: 'bg-red-100 text-red-800' },
+    'tree': { label: 'Tree', color: 'bg-emerald-100 text-emerald-800' },
+    'array': { label: 'Array', color: 'bg-orange-100 text-orange-800' },
+    'string': { label: 'String', color: 'bg-cyan-100 text-cyan-800' },
+    'merge-intervals': { label: 'Merge Intervals', color: 'bg-teal-100 text-teal-800' },
+    'lc-hard': { label: 'LeetCode Hard', color: 'bg-rose-100 text-rose-800' }, // Changed from red to rose
+    'lc-medium': { label: 'LeetCode Medium', color: 'bg-amber-100 text-amber-800' }, // Changed from red to amber
+    'meta': { label: 'Meta', color: 'bg-lime-100 text-lime-800' }, // Changed from blue to lime
+    'recursion': { label: 'Recursion', color: 'bg-fuchsia-100 text-fuchsia-800' }, // Changed from purple to fuchsia
+    'linkedlist': { label: 'Linked List', color: 'bg-violet-100 text-violet-800' },
+    'fundamentals': { label: 'Fundamental', color: 'bg-slate-100 text-slate-800' },
+    'stack': { label: 'Stack', color: 'bg-gray-200 text-gray-900' },
+    'lc-easy': { label: 'LeetCode Easy', color: 'bg-zinc-100 text-zinc-800' }
 
-};
+
+  };
 
 /**
  * Represents a coding problem that students can solve by filling in blanks
