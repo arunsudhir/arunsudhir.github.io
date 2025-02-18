@@ -240,7 +240,7 @@ const CodePractice = () => {
   };
 
   return (
-  <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg text-gray-900">
+  <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg text-gray-900">
     {/* Tag Filter Section */}
     <div className="mb-6">
       <h3 className="text-lg font-semibold mb-2">Filter by Topic:</h3>
@@ -264,10 +264,10 @@ const CodePractice = () => {
 
     {/* Toggle Between Partial Code & Full Code Editor */}
     {!showFullEditor ? (
-      <div className="flex gap-8">
-        {/* Partial Code View */}
-        <div className="w-3/4 relative">
-          <pre className="bg-gray-100 p-6 rounded-lg text-sm font-mono text-left overflow-x-auto shadow-inner">
+    <div className="flex gap-8">
+      {/* Increase code pane width slightly */}
+      <div className="w-5/6 relative">
+        <pre className="bg-gray-100 p-6 rounded-lg text-sm font-mono text-left overflow-x-auto shadow-inner">
             {currentProblem.codeLines.map((line, index) => {
               const matches = line.match(/_____\d+_____/g);
               if (!matches) return <div key={index} className="leading-relaxed">{line}</div>;
@@ -305,50 +305,54 @@ const CodePractice = () => {
                 </div>
               );
             })}
-          </pre>
+        </pre>
 
-          {/* Navigation & Full Code Attempt Button */}
-          <div className="mt-4 flex flex-col gap-4">
-            <button
-              onClick={checkAnswers}
-              disabled={!allAnswersFilled()}
-              className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Check Answers
-            </button>
-            <button
-              onClick={clearAnswers}
-              className="w-full bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
-            >
-              Clear Answers
-            </button>
-            <button
-              onClick={() => setShowFullEditor(true)}
-              className="w-full bg-blue-500 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
-            >
-              Attempt Full Code
-            </button>
-          </div>
-        </div>
-
-        {/* Draggable Tokens for Partial Code */}
-        <div className="w-1/4 space-y-6">
-          <div className="space-y-2">
-            {currentProblem.tokens.map((token, index) => (
-              <div
-                key={index}
-                draggable
-                onDragStart={() => handleDragStart(token)}
-                onDragEnd={handleDragEnd}
-                className={getTokenClassName(token)}
-              >
-                {token}
-              </div>
-            ))}
-          </div>
+        <div className="mt-4">
+          <button
+            onClick={() => setShowFullEditor(true)}
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
+          >
+            Attempt Full Code
+          </button>
         </div>
       </div>
-    ) : (
+
+      {/* Right side with more compact buttons */}
+      <div className="w-1/6 space-y-6">
+        {/* Tokens section */}
+        <div className="space-y-2">
+          {currentProblem.tokens.map((token, index) => (
+            <div
+              key={index}
+              draggable
+              onDragStart={() => handleDragStart(token)}
+              onDragEnd={handleDragEnd}
+              className={getTokenClassName(token)}
+            >
+              {token}
+            </div>
+          ))}
+        </div>
+
+        {/* Compact action buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={checkAnswers}
+            disabled={!allAnswersFilled()}
+            className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-medium transform transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Check Answers
+          </button>
+          <button
+            onClick={clearAnswers}
+            className="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-xs font-medium transform transition-all hover:scale-105"
+          >
+            Clear Answers
+          </button>
+        </div>
+      </div>
+    </div>
+  ) : (
       // Full Code Editor Section
       <div className="flex flex-col gap-6">
         {/* Full Code Input */}

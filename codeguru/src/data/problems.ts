@@ -54,36 +54,34 @@ export const CODING_PROBLEMS: CodingProblem[] = [
       title: 'Binary Search Implementation',
       description: 'Complete the code for a binary search algorithm.',
       codeLines: [
-        'function binarySearch(arr, target) {',
-        '  let left = 0;',
-        '  let right = _____1_____;',
+        'def binarySearch(arr, target):',
+        '  left = 0',
+        '  right = _____1_____',
         '',
-        '  while (_____2_____) {',
-        '    const mid = _____3_____;',
-        '    if (arr[mid] === target) {',
-        '      return mid;',
-        '    } else if (_____4_____) {',
-        '      left = mid + 1;',
-        '    } else {',
-        '      right = _____5_____;',
-        '    }',
-        '  }',
-        '  return -1;',
-        '}'
+        '  while (_____2_____):',
+        '    mid = _____3_____',
+        '    if (arr[mid] === target):',
+        '      return mid',
+        '    elif (_____4_____):',
+        '      left = mid + 1',
+        '    else:',
+        '      right = _____5_____',
+        '  return -1',
       ],
       tokens: [
-        'arr.length - 1',
+        'len(arr) - 1',
         'left <= right',
-        'Math.floor((left + right) / 2)',
+        'left >= right',
+        '(left + right) / 2',
+        '(left + right) // 2',
         'arr[mid] < target',
         'mid - 1',
-        'left >= right',
-        'Math.ceil((left + right) / 2)'
+        'mid + 1'
       ],
       solutions: {
-        '1': 'arr.length - 1',
+        '1': 'len(arr) - 1',
         '2': 'left <= right',
-        '3': 'Math.floor((left + right) / 2)',
+        '3': '(left + right) // 2',
         '4': 'arr[mid] < target',
         '5': 'mid - 1'
       },
@@ -94,7 +92,7 @@ export const CODING_PROBLEMS: CodingProblem[] = [
         "4": "If the middle element is smaller than the target, narrow the search to the right half.",
         "5": "If the middle element is greater than the target, narrow the search to the left half."
   },
-  tags: ['binary-search']
+  tags: ['binary-search', 'fundamentals', 'lc-easy']
     },
     {
       id: 'sliding-window-min-sum',
@@ -929,7 +927,62 @@ export const CODING_PROBLEMS: CodingProblem[] = [
           "6": "The simplified path should start with a '/'.",
           "7": "Join the stack contents with '/' to form the final simplified path."
         }
+      },
+      {
+        "id": "decimal-to-binary-conversion",
+        "title": "Decimal to Binary Conversion",
+        "description": "Given a positive integer n, write a function that returns its binary equivalent as a string without using any in-built binary conversion functions.",
+        "tags": [ "stack", "string", "fundamentals", "lc-medium", "meta"],
+        "codeLines": [
+          "def decimalToBinary(self, num):",
+          "    # Create an empty stack to hold binary digits.",
+          "    stack = _____1_____",
+          "    # Continue the loop until num becomes 0.",
+          "    while _____2_____:",
+          "        # Push the remainder of num divided by 2 onto the stack.",
+          "        stack.append(_____3_____)",
+          "        # Update num by integer division (floor division) by 2.",
+          "        _____4_____",
+          "    outputFormat = _____5_____",
+          "    binaryString = _____6_____",
+          "    return _____7_____"
+        ],
+        "tokens": [
+          "[]",
+          "num > 0",
+          "num % 2",
+          "num //= 2",
+          "num /= 2",
+          "stack",
+          "''.join(str(i) for i in outputFormat)",
+          "binaryString",
+          "binaryString[::-1]",
+          "reversed(stack)",
+          "num",
+          "join",
+          "int",
+          "True"
+        ],
+        "solutions": {
+          "1": "[]",
+          "2": "num > 0",
+          "3": "num % 2",
+          "4": "num //= 2",
+          "5": "reversed(stack)",
+          "6": "''.join(str(i) for i in reversedStack)",
+          "7": "binaryString"
+        },
+        "hints": {
+          "1": "Initialize the stack as an empty list.",
+          "2": "Loop until num becomes 0.",
+          "3": "Append the remainder when num is divided by 2 to the stack.",
+          "4": "Update num using floor division by 2.",
+          "5": "Reverse the stack to correct the digit order.",
+          "6": "Join the reversed stack elements into a string.",
+          "7": "Return the constructed binary string."
+        }
       }
+      
       
       
       
