@@ -40,6 +40,8 @@ const CodePractice = () => {
   });
 
   const currentProblem = filteredProblems[currentProblemIndex];
+  // The first line from the partial code (the function signature)
+  const initialLine = currentProblem.codeLines[0];
 
   const handleDragStart = (token: string) => {
     setDraggedToken(token);
@@ -76,6 +78,8 @@ const CodePractice = () => {
       setFilledAnswers({});
       setShowResults(false);
       setShowHint(null);
+      setFeedback(null);
+      setShowFullEditor(false);
     }
   };
 
@@ -160,17 +164,34 @@ const CodePractice = () => {
 
   // full editor realted stuff
   const handleAttemptFullCode = () => {
+    setUserCode(`${initialLine}\n`);
+    setFeedback(null);
     setShowFullEditor(true);
   };
+
+  // Switch back to partial view and clear any stored code or feedback
+  const handleBackToPartial = () => {
+    setUserCode(`${initialLine}\n`);
+    setFeedback(null);
+    setShowFullEditor(false);
+  };
+
   const handleNextQuestion = () => {
     setCurrentProblemIndex((prevIndex) => (prevIndex + 1) % CODING_PROBLEMS.length);
     setShowFullEditor(false);
-    setUserCode('');
+    setUserCode(`${initialLine}\n`);
     setFeedback(null);
   };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setUserCode(event.target.value);
+    let newText = event.target.value;
+    // Split the text into lines and ensure the first line remains the same.
+    const lines = newText.split('\n');
+    if (lines[0] !== initialLine) {
+      lines[0] = initialLine;
+      newText = lines.join('\n');
+    }
+    setUserCode(newText);
   };
 
   const normalizeCode = (code: string) => {
@@ -330,14 +351,11 @@ const CodePractice = () => {
     ) : (
       // Full Code Editor Section
       <div className="flex flex-col gap-6">
-        <h2 className="text-xl font-bold">{currentProblem.title}</h2>
-        <p className="text-lg text-gray-700">{currentProblem.description}</p>
-
         {/* Full Code Input */}
         <textarea
           value={userCode}
           onChange={(e) => setUserCode(e.target.value)}
-          className="w-full h-64 p-4 border rounded-lg font-mono"
+          className="w-full h-64 p-2 border rounded-lg font-mono text-sm leading-tight"
           placeholder="Write your code here..."
         />
 
@@ -350,7 +368,7 @@ const CodePractice = () => {
             Submit Code
           </button>
           <button
-            onClick={() => setShowFullEditor(false)}
+            onClick={handleBackToPartial}
             className="w-full bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
           >
             Back to Partial Code
