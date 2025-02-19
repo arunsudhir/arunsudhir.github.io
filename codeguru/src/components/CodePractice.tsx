@@ -251,6 +251,10 @@ const PYTHON_KEYWORDS = {
   'while': 'text-blue-600 font-semibold',
   'return': 'text-blue-600 font-semibold',
   'in': 'text-blue-600 font-semibold',
+  'str': 'text-blue-600 font-semibold',
+  'int': 'text-blue-600 font-semibold',
+  'list': 'text-blue-600 font-semibold',
+  'bool': 'text-blue-600 font-semibold',
   
   // Function and class related
   'def': 'text-purple-600 font-semibold',
@@ -261,9 +265,6 @@ const PYTHON_KEYWORDS = {
   // Built-in functions and types
   'len': 'text-green-600 font-semibold',
   'range': 'text-green-600 font-semibold',
-  'str': 'text-green-600 font-semibold',
-  'int': 'text-green-600 font-semibold',
-  'list': 'text-green-600 font-semibold',
   'print': 'text-green-600 font-semibold',
   
   // Methods and data structures
@@ -373,7 +374,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
                 <div key={index} className="relative group leading-relaxed">
                   {parts.map((part, pIndex) => (
                     <React.Fragment key={pIndex}>
-                      {part}
+                      {highlightCode(part)}
                       {pIndex < parts.length - 1 && (
                         <span className="relative inline-flex items-center">
                           <span
