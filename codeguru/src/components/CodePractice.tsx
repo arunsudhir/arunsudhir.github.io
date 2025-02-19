@@ -202,6 +202,7 @@ const CodePractice = () => {
       .join("\n");
   };
   
+  // handle full code submission
   const handleSubmit = () => {
     // Construct expected solution
     const expectedSolution = normalizeCode(
@@ -239,6 +240,96 @@ const CodePractice = () => {
     }
   };
 
+  // Syntax highlighting
+  // First, let's define our syntax highlighting keywords and their colors
+const PYTHON_KEYWORDS = {
+  // Control flow keywords
+  'if': 'text-blue-600 font-semibold',
+  'elif': 'text-blue-600 font-semibold',
+  'else': 'text-blue-600 font-semibold',
+  'for': 'text-blue-600 font-semibold',
+  'while': 'text-blue-600 font-semibold',
+  'return': 'text-blue-600 font-semibold',
+  'in': 'text-blue-600 font-semibold',
+  
+  // Function and class related
+  'def': 'text-purple-600 font-semibold',
+  'class': 'text-purple-600 font-semibold',
+  '__init__': 'text-purple-600 font-semibold',
+  'self': 'text-purple-600 font-semibold',
+  
+  // Built-in functions and types
+  'len': 'text-green-600 font-semibold',
+  'range': 'text-green-600 font-semibold',
+  'str': 'text-green-600 font-semibold',
+  'int': 'text-green-600 font-semibold',
+  'list': 'text-green-600 font-semibold',
+  'print': 'text-green-600 font-semibold',
+  
+  // Methods and data structures
+  'sorted': 'text-teal-600 font-semibold',
+  'sort': 'text-teal-600 font-semibold',
+  'append': 'text-teal-600 font-semibold',
+  'deque': 'text-teal-600 font-semibold',
+  'stack': 'text-teal-600 font-semibold',
+  
+  // Logical operators
+  'not': 'text-orange-600 font-semibold',
+  'or': 'text-orange-600 font-semibold',
+  'and': 'text-orange-600 font-semibold',
+};
+
+// Helper function to apply syntax highlighting to a line of code
+const highlightCode = (code: string) => {
+  let highlighted = code;
+  // Create regex pattern that matches whole words only
+  const pattern = `\\b(${Object.keys(PYTHON_KEYWORDS).join('|')})\\b`;
+  const regex = new RegExp(pattern, 'g');
+  
+  return highlighted.split(regex).map((part, index) => {
+    if (PYTHON_KEYWORDS[part as keyof typeof PYTHON_KEYWORDS]) {
+      return <span key={index} className={PYTHON_KEYWORDS[part as keyof typeof PYTHON_KEYWORDS]}>{part}</span>;
+    }
+    return part;
+  });
+};
+
+// Enhanced text editor with auto-indent
+const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    
+    const textarea = e.currentTarget;
+    const { selectionStart } = textarea;
+    const currentLine = userCode.substring(0, selectionStart).split('\n').pop() || '';
+    
+    // Calculate current indentation
+    const matchResult = currentLine.match(/^\s*/);
+    const currentIndent = matchResult ? matchResult[0] : '';
+    // Check if line ends with colon
+    const endsWithColon = currentLine.trim().endsWith(':');
+    
+    // Create new indent level
+    const newIndent = endsWithColon ? currentIndent + '    ' : currentIndent;
+    
+    // Insert new line with proper indentation
+    const newValue = 
+      userCode.substring(0, selectionStart) + 
+      '\n' + 
+      newIndent +
+      userCode.substring(selectionStart);
+    
+    setUserCode(newValue);
+    
+    // Set cursor position after indentation
+    setTimeout(() => {
+      textarea.selectionStart = 
+      textarea.selectionEnd = 
+        selectionStart + newIndent.length + 1;
+    }, 0);
+  }
+};
+
   return (
   <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg text-gray-900">
     {/* Tag Filter Section */}
@@ -270,8 +361,13 @@ const CodePractice = () => {
         <pre className="bg-gray-100 p-6 rounded-lg text-sm font-mono text-left overflow-x-auto shadow-inner">
             {currentProblem.codeLines.map((line, index) => {
               const matches = line.match(/_____\d+_____/g);
-              if (!matches) return <div key={index} className="leading-relaxed">{line}</div>;
-
+              if (!matches) {
+                return (
+                  <div key={index} className="leading-relaxed">
+                    {highlightCode(line)}
+                  </div>
+                );
+              }
               let parts = line.split(/_____\d+_____/);
               return (
                 <div key={index} className="relative group leading-relaxed">
@@ -355,14 +451,14 @@ const CodePractice = () => {
   ) : (
       // Full Code Editor Section
       <div className="flex flex-col gap-6">
-        {/* Full Code Input */}
         <textarea
           value={userCode}
           onChange={(e) => setUserCode(e.target.value)}
-          className="w-full h-64 p-2 border rounded-lg font-mono text-sm leading-tight"
+          onKeyDown={handleKeyDown}
+          className="w-full h-64 p-4 border rounded-lg font-mono text-sm leading-tight"
           placeholder="Write your code here..."
         />
-
+        
         {/* Full Code Submission & Navigation */}
         <div className="flex gap-4">
           <button
