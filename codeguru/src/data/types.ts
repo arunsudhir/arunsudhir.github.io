@@ -101,6 +101,13 @@ export interface CodingProblem {
       [key: string]: string;
     };
 
+    /** 
+     * Detailed explanation of the topic covered by this problem,
+     * providing context and background knowledge before the student
+     * attempts to solve it
+     */
+    topicExplanation?: string;
+
     tags: ProblemTag[]; // New field for problem categorization
   }
   

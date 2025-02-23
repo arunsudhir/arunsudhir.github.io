@@ -734,7 +734,12 @@ export const CODING_PROBLEMS: CodingProblem[] = [
           "5": "Start the recursion from the root node.",
           "6": "Use float('-inf') as the initial lower bound.",
           "7": "Use float('inf') as the initial upper bound."
-        }
+        },
+        // Explain what a binary search tree is and how it is represented in memory.
+        // Then explain how we can validate each node by using upper bound and lower bound
+        // Also explain how to construct a sumple BST with example
+        // Exaplin like you are doing it to a noob
+        "topicExplanation" : "A binary search tree (BST) is a type of binary tree where each node has at most two children, referred to as the left child and the right child. In a BST, the value of all nodes in the left subtree of a node is less than the node's value, and the value of all nodes in the right subtree is greater than the node's value. This property allows for efficient searching, insertion, and deletion operations. A BST can be represented in memory using a simple node structure with a value, a left child pointer, and a right child pointer. To validate if a binary tree is a BST, we can perform a depth-first search (DFS) traversal of the tree while keeping track of the lower and upper bounds for each node. At each node, we check if the node's value is within the bounds set by its ancestors. If the value is outside the bounds, we return False. Otherwise, we recursively validate the left and right subtrees with updated bounds. We start the validation process from the root node with initial bounds of negative infinity and positive infinity. Here's an example of constructing a simple BST: Given the values [2, 1, 3], we can create a BST with the following structure: 2 / \\ 1 3"
       },
       {
         "id": "construct-binary-tree-preorder-inorder",
@@ -806,7 +811,7 @@ export const CODING_PROBLEMS: CodingProblem[] = [
           "5": "Initiate the recursive construction using the entire inorder range.",
           "6": "Increment preIndex to move to the next root candidate in preorder.",
           "7": "Retrieve the index of the current root from the inorder index map."
-        }
+        },
       },
       {
         "id": "print-level-order-binary-tree",

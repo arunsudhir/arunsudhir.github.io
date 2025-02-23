@@ -1,15 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 import { CODING_PROBLEMS } from '../data/problems';
 import {TAG_METADATA} from '../data/types'
 import type { CodingProblem, ProblemTag } from '../data/types';
 import CollapsibleTags from './CollapsibleTags';
 import * as Diff from 'diff';
-
-
-
-
-
+import FullCodeEditor from './FullCodeEditor';
 
 const CodePractice = () => {
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
@@ -20,16 +16,12 @@ const CodePractice = () => {
   const [showHint, setShowHint] = useState<string | null>(null);
   const [showSuccessAnimation, setShowSuccessAnimation] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  //const [selectedTags, setSelectedTags] = useState<Set<ProblemTag>>(new Set());
-  // Add state for selected tags
   const [selectedTags, setSelectedTags] = useState<ProblemTag[]>([]);
-  // fill editor related commands
   const [showFullEditor, setShowFullEditor] = useState(false);
   const [userCode, setUserCode] = useState('');
   const [feedback, setFeedback] = useState<React.ReactNode | null>(null);
-
-
-
+  // New state for topic explanation
+  const [showExplanation, setShowExplanation] = useState(false);
 
   // Filter problems based on selected tags
   const filteredProblems = CODING_PROBLEMS.filter(problem => {
@@ -80,6 +72,7 @@ const CodePractice = () => {
       setShowHint(null);
       setFeedback(null);
       setShowFullEditor(false);
+      setShowExplanation(false); // Reset explanation visibility
     }
   };
 
@@ -127,6 +120,11 @@ const CodePractice = () => {
   // Handle tag deselection
   const handleTagDeselect = (tag: ProblemTag) => {
     setSelectedTags(selectedTags.filter(t => t !== tag));
+  };
+  
+  // Toggle explanation visibility
+  const toggleExplanation = () => {
+    setShowExplanation(!showExplanation);
   };
   
   const getSlotClassName = (index : string) => {
@@ -181,6 +179,7 @@ const CodePractice = () => {
     setShowFullEditor(false);
     setUserCode(`${initialLine}\n`);
     setFeedback(null);
+    setShowExplanation(false); // Reset explanation visibility
   };
 
   const handleCodeChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -354,6 +353,27 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       </p>
     </div>
 
+    {/* Topic Explanation Button - Always visible */}
+    {currentProblem.topicExplanation && (
+      <button
+        onClick={toggleExplanation}
+        className="mb-6 flex items-center gap-2 bg-amber-100 hover:bg-amber-200 text-amber-800 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+      >
+        <BookOpen className="w-5 h-5" />
+        {showExplanation ? "Hide Topic Explanation" : "Show Topic Explanation"}
+      </button>
+    )}
+
+    {/* Topic Explanation Panel - Conditionally visible */}
+    {showExplanation && currentProblem.topicExplanation && (
+      <div className="mb-8 p-6 bg-amber-50 rounded-lg border border-amber-200 animate-fadeIn">
+        <h3 className="text-xl font-bold text-amber-800 mb-4">Topic Explanation</h3>
+        <div className="prose max-w-none text-sm text-gray-800">
+          {currentProblem.topicExplanation}
+        </div>
+      </div>
+    )}
+
     {/* Toggle Between Partial Code & Full Code Editor */}
     {!showFullEditor ? (
     <div className="flex gap-8">
@@ -451,34 +471,14 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     </div>
   ) : (
       // Full Code Editor Section
-      <div className="flex flex-col gap-6">
-        <textarea
-          value={userCode}
-          onChange={(e) => setUserCode(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="w-full h-64 p-4 border rounded-lg font-mono text-sm leading-tight"
-          placeholder="Write your code here..."
-        />
-        
-        {/* Full Code Submission & Navigation */}
-        <div className="flex gap-4">
-          <button
-            onClick={handleSubmit}
-            className="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
-          >
-            Submit Code
-          </button>
-          <button
-            onClick={handleBackToPartial}
-            className="w-full bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg text-sm font-medium transform transition-all hover:scale-105"
-          >
-            Back to Partial Code
-          </button>
-        </div>
-
-        {/* Feedback Message */}
-        {feedback && <p className="mt-4 text-lg">{feedback}</p>}
-      </div>
+      <FullCodeEditor
+      userCode={userCode}
+      setUserCode={setUserCode}
+      handleKeyDown={handleKeyDown}
+      handleSubmit={handleSubmit}
+      handleBackToPartial={handleBackToPartial}
+      feedback={feedback}
+      />
     )}
 
     {/* Next Question Button */}
