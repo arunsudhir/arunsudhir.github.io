@@ -23,7 +23,8 @@ export type ProblemTag =
   | 'linkedlist'
   | 'fundamentals' // New tag for fundamental concepts
   | 'stack'
-  | 'lc-easy'; // New tag for LeetCode easy problems
+  | 'lc-easy' // New tag for LeetCode easy problems
+  | 'linked-list'; // New tag for linked list problems
 
 // Interface for tag metadata
 export interface TagMetadata {
@@ -52,7 +53,9 @@ export const TAG_METADATA: Record<ProblemTag, TagMetadata> = {
     'linkedlist': { label: 'Linked List', color: 'bg-violet-100 text-violet-800' },
     'fundamentals': { label: 'Fundamental', color: 'bg-slate-100 text-slate-800' },
     'stack': { label: 'Stack', color: 'bg-gray-200 text-gray-900' },
-    'lc-easy': { label: 'LeetCode Easy', color: 'bg-zinc-100 text-zinc-800' }
+    'lc-easy': { label: 'LeetCode Easy', color: 'bg-zinc-100 text-zinc-800' },
+    'linked-list': { label: 'Linked List', color: 'bg-sky-100 text-sky-800' }
+
 
 
   };
